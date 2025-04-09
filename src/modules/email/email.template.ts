@@ -97,6 +97,18 @@ export const getResetPasswordEmail = (name: string) => {
   return mainTemplate(body);
 };
 
+export const getHospitalRegistrationEmail = (name: string) => {
+  const body = `<p>Dear ${name},<br>
+    <br>
+    Your hospital registration has been received and is currently awaiting verification.<br>
+    We will notify you once the verification process is complete.<br>
+    <br>
+    Regards,<br>
+    Alfia Team</p>`;
+  return mainTemplate(body);
+};
+
+
 export const getVerificationSuccessfulEmail = (name: string) => {
   const body = `<p>Dear ${name},<br>
     <br>

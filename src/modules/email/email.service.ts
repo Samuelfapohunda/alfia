@@ -5,6 +5,7 @@ import {
   getAdminInvitationEmail,
   getChangePasswordEmail,
   getForgotPasswordEmail,
+  getHospitalRegistrationEmail,
   getResetPasswordEmail,
   getVerificationEmail,
   getVerificationSuccessfulEmail,
@@ -69,6 +70,15 @@ export class EmailService {
   ): Promise<void> {
     const body = getResetPasswordEmail(firstName);
     const subject = 'Reset Password Successful';
+    await this.mailService.sendEmail(email, subject, body);
+  }
+
+  public async sendHospitalOnboardingEmail(
+    email: string,
+    name: string,
+  ): Promise<void> {
+    const body = getHospitalRegistrationEmail(name);
+    const subject = 'Hospital Registration';
     await this.mailService.sendEmail(email, subject, body);
   }
 

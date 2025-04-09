@@ -17,7 +17,7 @@ export class Hospital {
   @Prop({ required: true })
   phoneNumber: string;
 
-  @Prop({ required: true })
+  @Prop()
   CACDocumentURL: string;
 
   @Prop({ required: true })
