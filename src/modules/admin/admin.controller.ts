@@ -19,6 +19,7 @@ import {
   ApiResponse,
   ApiParam,
   ApiQuery,
+  ApiOkResponse,
 } from '@nestjs/swagger';
 import { Response } from 'express';
 import { AuthGuard } from 'src/common/guards/auth.guard';
@@ -396,4 +397,72 @@ export class AdminController {
     });
   }
 
+
+  @UseGuards(AuthGuard, SuperAdminGuard)
+  @Get('pending-hospitals')
+  @ApiOperation({ summary: 'Get hospitals pending approval' })
+  @ApiResponse({ 
+    status: HttpStatus.OK, 
+    description: 'Returns list of unverified hospitals' 
+  })
+  @ApiResponse({ 
+    status: HttpStatus.NOT_FOUND, 
+    description: 'Internal server error' 
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: Number,
+    description: 'Page number (default: 1)',
+    example: 1
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    description: 'Items per page (default: 10, max: 100)',
+    example: 10
+  })
+  async getPendingHospitals(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10
+  ) {
+      return await this.adminService.getPendingHospitalsToBeApproved(
+        (page - 1) * limit,
+        limit
+      );
+    }
+  
+
+@UseGuards(AuthGuard, SuperAdminGuard)
+@Post('approve/:hospitalId')
+@ApiOperation({ summary: 'Approve a hospital.' })
+@ApiParam({
+  name: 'hospitalId',
+  description: 'ID of the hospital to approve',
+})
+@ApiResponse({
+  status: HttpStatus.OK,
+  description: 'Hospital approved successfully',
+})
+@ApiResponse({
+  status: HttpStatus.NOT_FOUND,
+  description: 'Hospital not found',
+})
+@ApiResponse({
+  status: HttpStatus.INTERNAL_SERVER_ERROR,
+  description: 'Internal server error',
+})
+
+async approveHospital(
+  @Request() req,
+  @Res() res: Response,
+  @Param('hospitalId') hospitalId: string,
+  @GetCurrentUserId() adminId: string,
+) {
+  await this.adminService.approveHospital(adminId, hospitalId);
+  return res.status(HttpStatus.OK).json({
+    message: 'Hospital approved successfully',
+  });
 }
+} 

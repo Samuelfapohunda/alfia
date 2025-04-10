@@ -8,6 +8,7 @@ import { Admin, AdminSchema } from "src/models/admin.model";
 import { EmailService } from "../email/email.service";
 import { MailService } from "src/common/services/mail.service";
 import { User, UserSchema } from "src/models/user.model";
+import { Hospital, HospitalSchema } from "src/models/hospital.model";
 
 @Module({
    imports:[
@@ -15,6 +16,7 @@ import { User, UserSchema } from "src/models/user.model";
          { name: Role.name, schema: RoleSchema},
          { name: Admin.name, schema: AdminSchema},
          { name: User.name, schema: UserSchema},
+         { name: Hospital.name, schema: HospitalSchema},
 
       ]),
    ],

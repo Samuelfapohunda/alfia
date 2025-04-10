@@ -87,6 +87,25 @@ export const getAdminForgotPasswordEmail = (
   return mainTemplate(body);
 };
 
+
+
+export const getHospitalForgotPasswordEmail = (
+  name: string,
+  newPassword: string,
+) => {
+  const body = `<p>Dear ${name},<br>
+    <br>
+    Someone initiated a password reset on your account<br>
+    <br>
+    Please use the password below to gain access to your account<br>
+    <br>
+    <span style="font-size:24px"><strong>${newPassword}</strong></span><br>
+    <br>
+    Regards,<br>
+    Alfia Team</p>`;
+  return mainTemplate(body);
+};
+
 export const getResetPasswordEmail = (name: string) => {
   const body = `<p>Dear ${name},<br>
     <br>
@@ -108,7 +127,6 @@ export const getHospitalRegistrationEmail = (name: string) => {
   return mainTemplate(body);
 };
 
-
 export const getVerificationSuccessfulEmail = (name: string) => {
   const body = `<p>Dear ${name},<br>
     <br>
@@ -116,6 +134,35 @@ export const getVerificationSuccessfulEmail = (name: string) => {
     <br>
     Regards,<br>
     Alfia Team</p>`;
+  return mainTemplate(body);
+};
+
+export const sendHospitalVerificationEmail = (
+  name: string,
+  email: string,
+  password: string,
+) => {
+  const body = `
+    <p>Dear ${name},</p>
+    
+    <p>Your hospital account has been successfully verified and approved on Alfia.</p>
+    
+    <p>Here are your login credentials:</p>
+    <ul>
+      <li><strong>Email:</strong> ${email}</li>
+      <li><strong>Password:</strong> ${password}</li>
+    </ul>
+    
+    <p>For security reasons, we recommend changing your password after your first login.</p>
+    
+    <p>You can now log in and start creating bills and accessing BNPL services.</p>
+    
+    <p>Welcome aboard! 🚀</p>
+    
+    <p>Regards,<br>
+    The Alfia Team</p>
+  `;
+
   return mainTemplate(body);
 };
 

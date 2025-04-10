@@ -21,7 +21,7 @@ export const setupSwagger = (app: INestApplication) => {
     Object.entries(document.paths).map(([path, value]) => [
       `/${globalPrefix}${path}`,
       value,
-    ]),
+    ]), 
   );
 
   document.tags = [
@@ -38,19 +38,19 @@ export const setupSwagger = (app: INestApplication) => {
     //   description:
     //     'Endpoints for managing user profiles, including creation, retrieval, and updates.',
     // },
-    // {
-    //   name: 'Settings',
-    //   description: 'Endpoints for managing user settings and updates.',
-    // },
-    // {
-    //   name: 'Role',
-    //   description: 'Endpoints for managing roles within the system.',
-    // },
-    // {
-    //   name: 'Admin',
-    //   description:
-    //     'Administrative endpoints for managing users, roles, and system settings.',
-    // },
+    {
+      name: 'Hospital',
+      description: 'Endpoints for managing hospitals.',
+    },
+    {
+      name: 'Role',
+      description: 'Endpoints for managing roles within the system.',
+    },
+    {
+      name: 'Admin',
+      description:
+        'Administrative endpoints for managing users, roles, and system settings.',
+    },
     // {
     //   name: 'Waitlist',
     //   description: 'Endpoints for managing and interacting with the waitlist.',

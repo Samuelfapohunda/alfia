@@ -25,13 +25,14 @@ import {
 } from '../../common/dto/admin.dto';
 import { RoleService } from '../role/role.service';
 import { User } from 'src/models/user.model';
-
+import { Hospital } from 'src/models/hospital.model';
 
 @Injectable()
 export class AdminService {
   constructor(
     @InjectModel(Admin.name) private adminModel: Model<Admin>,
     @InjectModel(User.name) private userModel: Model<User>,
+    @InjectModel(Hospital.name) private hospitalModel: Model<Hospital>,
     private readonly emailService: EmailService,
     private readonly roleService: RoleService,
   ) {}
@@ -137,7 +138,6 @@ export class AdminService {
           },
         };
       }
-
 
       return {
         data: {
@@ -260,14 +260,12 @@ export class AdminService {
       });
 
       const name = admin.name;
-      console.log(newPassword)
+      console.log(newPassword);
       await this.emailService.sendAdminForgotPasswordEmail(
         admin.email,
         name,
         newPassword,
       );
-
-      
     } catch (ex) {
       throw new HttpException(ex, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -522,6 +520,73 @@ export class AdminService {
       return {
         data: {
           message: 'Admin access restored successfully',
+        },
+      };
+    } catch (ex) {
+      throw new HttpException(ex, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async getPendingHospitalsToBeApproved(
+    skip: number,
+    limit: number,
+  ): Promise<IServiceResponse> {
+    try {
+      const hospitals = await this.hospitalModel
+        .find({ isVerified: false })
+        .skip(skip)
+        .limit(limit)
+        .sort({ createdAt: -1 })
+        .lean()
+        .exec();
+
+      return {
+        data: hospitals,
+      };
+    } catch (error) {
+      throw new HttpException(
+        'Failed to fetch pending hospitals',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async approveHospital(
+    adminId: string,
+    hospitalId: string,
+  ): Promise<IServiceResponse> {
+    try {
+      const hospital = await this.hospitalModel.findById(hospitalId);
+      if (!hospital) {
+        throw new NotFoundException('Hospital not found');
+      }
+
+      const admin = await this.adminModel.findById(adminId);
+      if (!admin) {
+        throw new NotFoundException('Admin not found');
+      }
+
+      if (hospital.isVerified) {
+        throw new BadRequestException('Hospital already verified');
+      }
+
+      const generatedPassword = Helpers.generatePassword(10);
+      const hashedPassword = await Helpers.hashPassword(generatedPassword);
+
+      hospital.isVerified = true;
+      hospital.approvedBy = adminId;
+      hospital.password = hashedPassword;
+      await hospital.save();
+
+      await this.emailService.sendVerificationSuccessfulEmailToHospital(
+        hospital.email,
+        hospital.name,
+        generatedPassword,
+      );
+
+      return {
+        data: {
+          message: 'Hospital approved successfully',
         },
       };
     } catch (ex) {

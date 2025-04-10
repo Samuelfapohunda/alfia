@@ -5,11 +5,13 @@ import {
   getAdminInvitationEmail,
   getChangePasswordEmail,
   getForgotPasswordEmail,
+  getHospitalForgotPasswordEmail,
   getHospitalRegistrationEmail,
   getResetPasswordEmail,
   getVerificationEmail,
   getVerificationSuccessfulEmail,
   sendConfirmationEmail,
+  sendHospitalVerificationEmail,
 } from './email.template';
 import { MailService } from 'src/common/services/mail.service';
 // import { Cron, CronExpression } from '@nestjs/schedule';
@@ -64,6 +66,18 @@ export class EmailService {
     await this.mailService.sendEmail(email, subject, body);
   }
 
+
+  
+  public async sendHospitalForgotPasswordEmail(
+    email: string,
+    firstName: string,
+    newPassword: string,
+  ): Promise<void> {
+    const body = getHospitalForgotPasswordEmail(firstName, newPassword);
+    const subject = 'Reset Password Email';
+    await this.mailService.sendEmail(email, subject, body);
+  }
+
   public async sendResetPasswordEmail(
     email: string,
     firstName: string,
@@ -97,6 +111,16 @@ export class EmailService {
   ): Promise<void> {
     const body = getVerificationSuccessfulEmail(firstName);
     const subject = 'Account Verification Successful';
+    await this.mailService.sendEmail(email, subject, body);
+  }
+
+  public async sendVerificationSuccessfulEmailToHospital(
+    email: string,
+    name: string,
+    password: string,
+  ): Promise<void> {
+    const body = sendHospitalVerificationEmail(name, email, password);
+    const subject = 'Hospital Account Verification Successful';
     await this.mailService.sendEmail(email, subject, body);
   }
 

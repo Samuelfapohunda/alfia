@@ -42,6 +42,9 @@ export class User {
   @Prop()
   lockUntil: Date;
 
+  @Prop()
+  walletBalance: number;
+
   @Prop({ default: 0 })
   loginCount: number;
 

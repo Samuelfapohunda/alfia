@@ -11,7 +11,6 @@ export class CreateHospitalDto {
   @IsNotEmpty() @IsString() @ApiProperty() accountName: string;
   @IsNotEmpty() @IsString() @ApiProperty() bankName: string;
 }
- 
 
 export class UpdateHospitalDto {
   @IsNotEmpty() @IsString() @ApiProperty() name: string;
@@ -23,3 +22,26 @@ export class UpdateHospitalDto {
   @IsNotEmpty() @IsString() @ApiProperty() accountName: string;
   @IsNotEmpty() @IsString() @ApiProperty() bankName: string;
 }
+
+export class LoginDto {
+  @ApiProperty()
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  password: string;
+}
+
+
+export class ForgotPasswordDto {
+  @IsNotEmpty() @ApiProperty() @IsEmail() email: string;
+}
+
+export class ChangeHospitalPasswordDto {
+  @IsNotEmpty() @ApiProperty() newPassword: string;
+  @IsNotEmpty() @ApiProperty() confirmPassword: string;
+}
+

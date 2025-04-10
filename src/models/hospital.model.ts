@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Schema as MongooseSchema } from 'mongoose';
+import mongoose, { HydratedDocument, Schema as MongooseSchema } from 'mongoose';
+import { Admin } from './admin.model';
 
 export type HospitalDocument = Hospital & HydratedDocument<Hospital>;
 
@@ -11,11 +12,23 @@ export class Hospital {
   @Prop({ required: true })
   address: string;
 
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Admin',
+  })
+  approvedBy: string;
+
   @Prop({ required: true, unique: true })
   email: string;
 
+  @Prop({ select: false })
+  password: string;
+
   @Prop({ required: true })
   phoneNumber: string;
+
+  @Prop({default: false})
+  isPasswordChanged: boolean;
 
   @Prop()
   CACDocumentURL: string;
@@ -32,6 +45,9 @@ export class Hospital {
   @Prop({ required: true })
   bankName: string;
 
+  @Prop()
+  walletBalance: number;
+
   @Prop({ default: false })
   isVerified: boolean;
 
@@ -40,7 +56,6 @@ export class Hospital {
 
   @Prop({ default: false })
   isDeleted: boolean;
-
 }
 
 export const HospitalSchema = SchemaFactory.createForClass(Hospital);

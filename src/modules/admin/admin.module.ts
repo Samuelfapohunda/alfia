@@ -8,6 +8,7 @@ import { MailService } from 'src/common/services/mail.service';
 import { RoleService } from '../role/role.service';
 import { Role, RoleSchema } from 'src/models/role.model';
 import { User, UserSchema } from 'src/models/user.model';
+import { Hospital, HospitalSchema } from 'src/models/hospital.model';
 
 @Module({
   imports: [
@@ -15,15 +16,11 @@ import { User, UserSchema } from 'src/models/user.model';
       { name: Admin.name, schema: AdminSchema },
       { name: Role.name, schema: RoleSchema },
       { name: User.name, schema: UserSchema },
+      { name: Hospital.name, schema: HospitalSchema },
     ]),
   ],
   controllers: [AdminController],
-  providers: [
-    AdminService,
-    MailService,
-    RoleService,
-    EmailService,
-  ],
+  providers: [AdminService, MailService, RoleService, EmailService],
   exports: [MongooseModule],
 })
 export class AdminModule {}
