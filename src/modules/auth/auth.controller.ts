@@ -52,6 +52,7 @@ export class AuthController {
     })
     async register(@Body() body: CreateUserDto): Promise<IServiceResponse> {
       return this.authService.create(body);
+      
     }
   
 

@@ -6,6 +6,7 @@ import { RoleModule } from './modules/role/role.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { UserModule } from './modules/users/users.module';
 import { HospitalModule } from './modules/hospital/hospital.module';
+import { BillModule } from './modules/bill/bill.module';
 
 @Module({
   imports: [
@@ -14,7 +15,8 @@ import { HospitalModule } from './modules/hospital/hospital.module';
     RoleModule,
     UserModule,
     AdminModule,
-    HospitalModule
+    HospitalModule,
+    BillModule,
   ],
   controllers: [],
   providers: [],

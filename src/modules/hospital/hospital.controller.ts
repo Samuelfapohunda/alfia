@@ -50,8 +50,12 @@ export class HospitalController {
     status: HttpStatus.INTERNAL_SERVER_ERROR,
     description: 'Internal server error',
   })
-  create(@Body() createHospitalDto: CreateHospitalDto) {
-    return this.hospitalService.createHospital(createHospitalDto);
+  async create(@Body() createHospitalDto: CreateHospitalDto, @Res() res: Response) {
+    const hospital = await this.hospitalService.createHospital(createHospitalDto);
+    return res.status(HttpStatus.CREATED).json({
+        message: 'Hospital Created successfully!',
+        data: hospital,
+      });
   }
 
   @Get('all')
@@ -68,8 +72,12 @@ export class HospitalController {
     status: HttpStatus.INTERNAL_SERVER_ERROR,
     description: 'Internal server error',
   })
-  async findAllHospital() {
-    return this.hospitalService.findAllHospitals();
+  async findAllHospital(@Res() res: Response) {
+    const hospital = await this.hospitalService.findAllHospitals();
+    return res.status(HttpStatus.CREATED).json({
+        message: 'Hospitals retrieved successfully!',
+        data: hospital,
+      });
   }
 
   @Get('one/:id')
@@ -86,16 +94,25 @@ export class HospitalController {
     status: HttpStatus.INTERNAL_SERVER_ERROR,
     description: 'Internal server error',
   })
-  async findOneHospital(@Param('id') id: string) {
-    return await this.hospitalService.findHospitalById(id);
+  async findOneHospital(@Param('id') id: string, @Res() res: Response) {
+    const hospital = await this.hospitalService.findHospitalById(id);
+    return res.status(HttpStatus.CREATED).json({
+        message: 'Hospital retrieved successfully!',
+        data: hospital,
+      });
   }
 
   @Patch('one/:id')
   async updateHospital(
     @Param('id') id: string,
     @Body() updateHospitalDto: UpdateHospitalDto,
+    @Res() res: Response,
   ) {
-    return await this.hospitalService.updateHospital(id, updateHospitalDto);
+    const hospital = await this.hospitalService.updateHospital(id, updateHospitalDto);
+    return res.status(HttpStatus.CREATED).json({
+        message: 'Hospital updated successfully!',
+        data: hospital,
+      });
   }
 
   @Delete('one/:id')
@@ -112,13 +129,17 @@ export class HospitalController {
     status: HttpStatus.INTERNAL_SERVER_ERROR,
     description: 'Internal server error',
   })
-  async deleteHospital(@Param('id') id: string) {
-    return await this.hospitalService.deleteHospital(id);
+  async deleteHospital(@Param('id') id: string, @Res() res: Response) {
+    const hospital = await this.hospitalService.deleteHospital(id);
+    return res.status(HttpStatus.CREATED).json({
+        message: 'Hospital Created successfully!',
+        data: hospital,
+      });
   }
 
   
     @Post('login')
-    @ApiOperation({ summary: 'Authenticate a hospital.' })
+    @ApiOperation({ summary: 'Authenticate a hospital.' }) 
     @ApiResponse({
       status: HttpStatus.OK,
       description: 'Hospital logged in successfully',
