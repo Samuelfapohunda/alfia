@@ -14,7 +14,7 @@ class ServiceItem {
 export class CreateBillDto {
   @IsNotEmpty()
   @IsMongoId()
-  patientId: string;
+  userId: string;
 
   @IsArray()
   @ValidateNested({ each: true })

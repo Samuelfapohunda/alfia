@@ -10,6 +10,7 @@ import { Role, RoleSchema } from 'src/models/role.model';
 import { User, UserSchema } from 'src/models/user.model';
 import { Hospital, HospitalSchema } from 'src/models/hospital.model';
 import { Bill, BillSchema } from 'src/models/bill.model';
+import { HospitalService } from '../hospital/hospital.service';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { Bill, BillSchema } from 'src/models/bill.model';
     MailService,
     RoleService,
     EmailService,
+    HospitalService
   ],
   exports: [MongooseModule],
 })

@@ -29,7 +29,6 @@ import { HospitalGuard } from 'src/common/guards/hospital.guard';
 @Controller('bill')
 @ApiTags('Bill')
 @ApiBearerAuth()
-
 export class BillController {
   constructor(private readonly billService: BillService) {}
 
@@ -52,7 +51,7 @@ export class BillController {
     @Body() CreateBillDto: CreateBillDto,
     @Res() res: Response,
     @GetCurrentUserId() hospitalId: string,
-    @Param('userId') userId: string,
+    @Body('userId') userId: string,
   ) {
     const bill = await this.billService.createBill(
       hospitalId,
@@ -63,7 +62,7 @@ export class BillController {
       message: 'Bill Created successfully!',
       data: bill,
     });
-  }
+  } 
 
   @UseGuards(AuthGuard, HospitalGuard)
     @Get('all')
