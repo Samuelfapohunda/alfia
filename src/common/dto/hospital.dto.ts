@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateHospitalDto {
@@ -13,14 +13,14 @@ export class CreateHospitalDto {
 }
 
 export class UpdateHospitalDto {
-  @IsNotEmpty() @IsString() @ApiProperty() name: string;
-  @IsNotEmpty() @IsString() @ApiProperty() email: string;
-  @IsNotEmpty() @IsString() @ApiProperty() address: string;
-  @IsNotEmpty() @IsString() @ApiProperty() registrationNumber: string;
-  @IsNotEmpty() @IsString() @ApiProperty() phoneNumber: string;
-  @IsNotEmpty() @IsString() @ApiProperty() accountNumber: string;
-  @IsNotEmpty() @IsString() @ApiProperty() accountName: string;
-  @IsNotEmpty() @IsString() @ApiProperty() bankName: string;
+  @IsOptional() @IsString() @ApiProperty() name: string;
+  @IsOptional() @IsString() @ApiProperty() email: string;
+  @IsOptional() @IsString() @ApiProperty() address: string;
+  @IsOptional() @IsString() @ApiProperty() registrationNumber: string;
+  @IsOptional() @IsString() @ApiProperty() phoneNumber: string;
+  @IsOptional() @IsString() @ApiProperty() accountNumber: string;
+  @IsOptional() @IsString() @ApiProperty() accountName: string;
+  @IsOptional() @IsString() @ApiProperty() bankName: string;
 }
 
 export class LoginDto {

@@ -8,7 +8,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
 import { IServiceResponse } from 'src/common/interfaces/http-response.interface';
 import { LoginDto, VerifyOtp, ResendOtp } from 'src/common/dto/auth.dto';
 import { Helpers } from 'src/common/helpers';
@@ -121,6 +121,7 @@ export class AdminService {
       // user.lockUntil = null;
       user.failedLoginAttempt = 0;
       user.loginCount += 1;
+      user.lastLogin = new Date();
       await user.save();
 
       const token = await generateTokens(user).accessToken;
@@ -136,9 +137,9 @@ export class AdminService {
             },
             token,
           },
-        };
+        }; 
       }
-
+        
       return {
         data: {
           user,

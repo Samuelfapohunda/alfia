@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { HydratedDocument, Schema as MongooseSchema } from 'mongoose';
+import mongoose, { HydratedDocument, Schema as MongooseSchema, ObjectId } from 'mongoose';
 import { Admin } from './admin.model';
 
 export type HospitalDocument = Hospital & HydratedDocument<Hospital>;

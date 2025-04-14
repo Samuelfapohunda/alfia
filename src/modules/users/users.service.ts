@@ -22,5 +22,21 @@ export class UsersService {
     @InjectModel(User.name) private userModel: Model<User>,
    ) {}
 
+
+   
+  async getUserById(userId: string): Promise<IServiceResponse> {
+    try {
+      const user = await this.userModel.findById(userId);
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+      return {
+        data: user,
+      };
+    } catch (ex) {
+      throw new HttpException(ex, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
     
 }

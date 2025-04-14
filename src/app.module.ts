@@ -7,6 +7,8 @@ import { AdminModule } from './modules/admin/admin.module';
 import { UserModule } from './modules/users/users.module';
 import { HospitalModule } from './modules/hospital/hospital.module';
 import { BillModule } from './modules/bill/bill.module';
+import { CreditRequestModule } from './modules/creditRequest/credit-request.module';
+import { CreditScoreModule } from './modules/credit-score/credit-score.module';
 
 @Module({
   imports: [
@@ -17,6 +19,8 @@ import { BillModule } from './modules/bill/bill.module';
     AdminModule,
     HospitalModule,
     BillModule,
+    CreditRequestModule,
+    CreditScoreModule
   ],
   controllers: [],
   providers: [],

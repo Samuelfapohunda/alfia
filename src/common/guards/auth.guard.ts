@@ -23,7 +23,6 @@ export class AuthGuard implements CanActivate {
 
     try {
       const decoded = verify(token, JWT_SECRET);
-      console.log(decoded)
       request.user = decoded;
       return true;
     } catch (error) {

@@ -84,7 +84,7 @@ export class BillController {
     }
 
     @UseGuards(AuthGuard, HospitalGuard)
-    @Get(':billId')
+    @Get('one/:billId')
     @ApiOperation({ summary: 'Get a single Bill.' })
     @ApiResponse({
       status: HttpStatus.OK,
@@ -109,54 +109,86 @@ export class BillController {
       });
     }
 
-    // @Patch(':billId')
-    // @ApiOperation({ summary: 'Update a Bill.' })
-    // @ApiResponse({
-    //   status: HttpStatus.OK,
-    //   description: 'Bill updated successfully',
-    // })
-    // @ApiResponse({
-    //   status: HttpStatus.NOT_FOUND,
-    //   description: 'Bill not found',
-    // })
-    // @ApiResponse({
-    //   status: HttpStatus.INTERNAL_SERVER_ERROR,
-    //   description: 'Internal server error',
-    // })
-    // async update(
-    //   @Param('billId') billId: string,
-    //   @Body() updateBillDto: CreateBillDto,
-    //   @Res() res: Response,
-    // ) {
-    //   const bill = await this.billService.updateBillStatus(billId, updateBillDto);
-    //   return res.status(HttpStatus.OK).json({
-    //     message: 'Bill updated successfully!',
-    //     data: bill,
-    //   });
-    // }
+    @UseGuards(AuthGuard, HospitalGuard)
+    @Get('user/:userId')
+    @ApiOperation({ summary: 'Get single user Bill.' })
+    @ApiResponse({
+      status: HttpStatus.OK,
+      description: 'Bill retrieved successfully',
+    })
+    @ApiResponse({
+      status: HttpStatus.NOT_FOUND,
+      description: 'Bill not found',
+    })
+    @ApiResponse({
+      status: HttpStatus.INTERNAL_SERVER_ERROR,
+      description: 'Internal server error',
+    })
+    async getBillsByUserId(
+      @Param('userId') userId: string,
+      @Res() res: Response,
+    ) {
+      const bills = await this.billService.getBillsByUserId(userId);
+  
+      return res.status(HttpStatus.OK).json({
+        message: 'Bills fetched successfully',
+        data: bills.data,
+      });
+    }
 
-    // @Delete(':billId')
-    // @ApiOperation({ summary: 'Delete a Bill.' })
-    // @ApiResponse({
-    //   status: HttpStatus.OK,
-    //   description: 'Bill deleted successfully',
-    // })
-    // @ApiResponse({
-    //   status: HttpStatus.NOT_FOUND,
-    //   description: 'Bill not found',
-    // })
-    // @ApiResponse({
-    //   status: HttpStatus.INTERNAL_SERVER_ERROR,
-    //   description: 'Internal server error',
-    // })
-    // async remove(
-    //   @Param('billId') billId: string,
-    //   @Res() res: Response,
-    // ) {
-    //   const bill = await this.billService.deleteBill(billId);
-    //   return res.status(HttpStatus.OK).json({
-    //     message: 'Bill deleted successfully!',
-    //     data: bill,
-    //   });
-    // }
+    @Patch('one/:billId')
+    @ApiOperation({ summary: 'Update a Bill Status.' })
+    @ApiResponse({
+      status: HttpStatus.OK,
+      description: 'Bill status updated successfully',
+    })
+    @ApiResponse({
+      status: HttpStatus.NOT_FOUND,
+      description: 'Bill not found',
+    })
+    @ApiResponse({
+      status: HttpStatus.INTERNAL_SERVER_ERROR,
+      description: 'Internal server error',
+    })
+    @UseGuards(AuthGuard, HospitalGuard)
+  @Patch(':billId/status')
+  async updateBillStatus(
+    @Param('billId') billId: string,
+    @Body('status') status: string,
+    @Res() res: Response,
+  ) {
+    const updatedBill = await this.billService.updateBillStatus(billId, status);
+
+    return res.status(HttpStatus.OK).json({
+      message: 'Bill status updated successfully',
+      data: updatedBill.data,
+    });
+  }
+
+
+    @UseGuards(AuthGuard, HospitalGuard)
+    @Delete('one/:billId')
+    @ApiOperation({ summary: 'Delete a Bill.' })
+    @ApiResponse({
+      status: HttpStatus.OK,
+      description: 'Bill deleted successfully',
+    })
+    @ApiResponse({
+      status: HttpStatus.NOT_FOUND,
+      description: 'Bill not found',
+    })
+    @ApiResponse({
+      status: HttpStatus.INTERNAL_SERVER_ERROR,
+      description: 'Internal server error',
+    })
+    async remove(
+      @Param('billId') billId: string,
+      @Res() res: Response,
+    ) {
+      const bill = await this.billService.deleteBill(billId);
+      return res.status(HttpStatus.OK).json({
+        message: 'Bill deleted successfully!',
+        data: bill,
+      });
+    }
 }

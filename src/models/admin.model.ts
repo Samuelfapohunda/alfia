@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { HydratedDocument } from 'mongoose';
+import mongoose, { HydratedDocument, ObjectId } from 'mongoose';
 import { Role } from './role.model';
 
 export type AdminDocument = Admin & HydratedDocument<Admin>;
@@ -10,7 +10,7 @@ export class Admin {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Role',
   })
-  role: Role;
+  role: ObjectId;
 
   @Prop()
   name: string;
