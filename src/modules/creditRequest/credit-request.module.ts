@@ -14,12 +14,14 @@ import { HospitalService } from '../hospital/hospital.service';
 import { UsersService } from '../users/users.service';
 import { CreditRequest, CreditRequestSchema } from 'src/models/credit-request.model';
 import { AdminService } from '../admin/admin.service';
+import { Loan, LoanSchema } from 'src/models/loan.model';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: Admin.name, schema: AdminSchema },
       { name: CreditRequest.name, schema: CreditRequestSchema },
+      { name: Loan.name, schema: LoanSchema },
       { name: Hospital.name, schema: HospitalSchema },
       { name: Bill.name, schema: BillSchema },
       { name: Role.name, schema: RoleSchema },

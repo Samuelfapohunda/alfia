@@ -28,7 +28,7 @@ export class ZeehService {
 
   private async fetchData(endpoint: string, payload: any) {
     return await axios.post(
-      `${this.ZEEH_URL}/${endpoint}`,
+      `${this.ZEEH_URL}/${endpoint}`,  
       payload,
       this.header,
     );

@@ -8,7 +8,7 @@ export const fc_score_data = {
   address: '',
   email: '',
   score: {
-    totalConsumerScore: '407',
+    totalConsumerScore: '670',
     description: 'HIGH RISK',
     totalAccounts: '24',
     scoreDate: '07/01/2023',

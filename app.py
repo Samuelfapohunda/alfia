@@ -13,7 +13,6 @@ async def predict(request: Request):
     features = np.array([[
         data['externalScore'],
         data['repaymentHistory'],
-        data['hospitalTrustScore'],
         data['loanFrequency'],
         data['billAmount']
     ]])

@@ -9,6 +9,7 @@ import { HospitalModule } from './modules/hospital/hospital.module';
 import { BillModule } from './modules/bill/bill.module';
 import { CreditRequestModule } from './modules/creditRequest/credit-request.module';
 import { CreditScoreModule } from './modules/credit-score/credit-score.module';
+import { LoanModule } from './modules/loan/loan.module';
 
 @Module({
   imports: [
@@ -20,7 +21,8 @@ import { CreditScoreModule } from './modules/credit-score/credit-score.module';
     HospitalModule,
     BillModule,
     CreditRequestModule,
-    CreditScoreModule
+    CreditScoreModule,
+    LoanModule
   ],
   controllers: [],
   providers: [],

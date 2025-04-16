@@ -12,20 +12,18 @@ import { HospitalService } from '../hospital/hospital.service';
 import { UsersService } from '../users/users.service';
 import { CreditRequest, CreditRequestSchema } from 'src/models/credit-request.model';
 import { AdminService } from '../admin/admin.service';
-import { CreditScoreService } from './credit-score.service';
-import { CreditScoreController } from './credit-score.controller';
+import { LoanService } from './loan.service';
+import { LoanController } from './loan.controller';
 import { CreditScore, CreditScoreSchema } from 'src/models/credit-score.model';
 import { ZeehService } from '../zeeh/zeeh.service';
 import { Loan, LoanSchema } from 'src/models/loan.model';
-import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
-    HttpModule,
     MongooseModule.forFeature([
       { name: Admin.name, schema: AdminSchema },
-      { name: CreditRequest.name, schema: CreditRequestSchema },
       { name: Loan.name, schema: LoanSchema },
+      { name: CreditRequest.name, schema: CreditRequestSchema },
       { name: CreditScore.name, schema: CreditScoreSchema },
       { name: Hospital.name, schema: HospitalSchema },
       { name: Bill.name, schema: BillSchema },
@@ -33,9 +31,9 @@ import { HttpModule } from '@nestjs/axios';
       { name: User.name, schema: UserSchema },
     ]),
   ],
-  controllers: [CreditScoreController],
+  controllers: [LoanController],
   providers: [
-    CreditScoreService,
+    LoanService,
     ZeehService,
     MailService,
     AdminService,
@@ -46,4 +44,4 @@ import { HttpModule } from '@nestjs/axios';
   ],
   exports: [MongooseModule],
 })
-export class CreditScoreModule {}
+export class LoanModule {}

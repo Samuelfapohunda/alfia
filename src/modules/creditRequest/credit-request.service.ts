@@ -8,11 +8,13 @@ import { CreditRequest } from 'src/models/credit-request.model';
 import { BillService } from '../bill/bill.service';
 import { Bill } from 'src/models/bill.model';
 
+
 @Injectable()
 export class CreditRequestService {
 constructor (
     @InjectModel(CreditRequest.name) private readonly creditRequestModel: Model<CreditRequest>,
     @InjectModel(Bill.name) private readonly billModel: Model<Bill>,
+
   
 ) {}
 
@@ -63,7 +65,7 @@ async create(
       startDate: createCreditRequestDto.startDate,
       duration: createCreditRequestDto.duration,
     });
-
+ 
       return {
         data: newCreditRequest
       };
@@ -71,6 +73,52 @@ async create(
       throw new HttpException(ex.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+
+
+  
+  // async processCreditRequest(
+  //   creditRequestId: string,
+  //   adminId: string,
+  //   status: CreditRequestStatus,
+  // ): Promise<CreditRequest> {
+  //   try {
+  //     const creditRequest =
+  //       await this.creditRequestModel.findById(creditRequestId);
+
+  //     if (!creditRequest)
+  //       throw new NotFoundException('Credit request not found');
+
+  //     const updateData: any = { status };
+  //     if (
+  //       status === CreditRequestStatus.Approved &&
+  //       amountToBeGiven !== undefined
+  //     ) {
+  //       const interest =
+  //         (amountToBeGiven * creditRequest.interestPercentage) / 100;
+
+  //       updateData.amountApproved = amountToBeGiven;
+  //       updateData.loanRepaymentAmount = amountToBeGiven + interest;
+  //     }
+
+  //     const updatedCreditRequest =
+  //       await this.creditRequestModel.findByIdAndUpdate(
+  //         creditRequestId,
+  //         { $set: updateData },
+  //         { new: true },
+  //       );
+
+  //     if (updatedCreditRequest.status === CreditRequestStatus.Approved) {
+  //       await this.createLoan(updatedCreditRequest, adminId);
+  //     } else if (updatedCreditRequest.status === CreditRequestStatus.Denied) {
+  //       await this.creditRequestDeclineAction(updatedCreditRequest, adminId);
+  //     }
+
+  //     return updatedCreditRequest;
+  //   } catch (ex) {
+  //     throw new HttpException(ex.message, HttpStatus.INTERNAL_SERVER_ERROR);
+  //   }
+  // }
 
 
   async findById(id: string): Promise<IServiceResponse> {
@@ -110,8 +158,8 @@ async create(
       .sort({ createdAt: -1 })
       .exec();
 
-      return {
-        data: creditRequest
+      return {   
+         data: creditRequest
       }
   }
 
@@ -198,4 +246,9 @@ async create(
   }
 
 
+
+
 }
+
+
+
