@@ -7,6 +7,9 @@ import { IServiceResponse } from 'src/common/interfaces/http-response.interface'
 import { CreditRequest } from 'src/models/credit-request.model';
 import { BillService } from '../bill/bill.service';
 import { Bill } from 'src/models/bill.model';
+import { CreditScoreService } from '../credit-score/credit-score.service';
+import { LoanService } from '../loan/loan.service';
+import { RepaymentStatus } from 'src/common/enums/loan.enum';
 
 
 @Injectable()
@@ -14,6 +17,8 @@ export class CreditRequestService {
 constructor (
     @InjectModel(CreditRequest.name) private readonly creditRequestModel: Model<CreditRequest>,
     @InjectModel(Bill.name) private readonly billModel: Model<Bill>,
+    private readonly creditScoreService: CreditScoreService,
+    private readonly loanService: LoanService,
 
   
 ) {}
@@ -61,6 +66,7 @@ async create(
       billId,
       userId,
       amountRequested: bill.totalAmount,
+      interestPercentage: 3,
       frequency: createCreditRequestDto.frequency,
       startDate: createCreditRequestDto.startDate,
       duration: createCreditRequestDto.duration,
@@ -75,51 +81,80 @@ async create(
   }
 
 
+  async processCreditRequest(creditRequestId: string): Promise<IServiceResponse> {
+    try {
+      const creditRequest = await this.creditRequestModel
+        .findById(creditRequestId)
+        .populate('billId')
+        .exec();
+  
+      if (!creditRequest) {
+        throw new NotFoundException('Credit request not found');
+      }
+  
+      const bill: any = creditRequest.billId;
+      const userId = bill.userId;
+  
+      const creditScoreResult = await this.creditScoreService.getCreditScore(userId);
+      const prediction = creditScoreResult?.data?.prediction;
+      const creditScore = creditScoreResult?.data?.creditScore;
+      const billAmount = bill.totalAmount;
+  
+      if (prediction === 1) {
+        const newLoan = await this.loanService.create({
+          userId,
+          creditRequestId,
+          amountGiven: billAmount,
+          amountToPay: billAmount,
+          duration: creditRequest.duration,
+          startDate: creditRequest.startDate,
+          frequency: creditRequest.frequency,
+          endDate: creditRequest.endDate,
+          nextRepaymentDate: creditRequest.nextRepaymentDate,
+          repaymentStatus: RepaymentStatus.InProgress,
+        });
+  
+        creditRequest.status = CreditRequestStatus.Approved;
+        creditRequest.amountApproved = billAmount;
+
+        const interest =
+        (billAmount * creditRequest.interestPercentage) / 100;
+
+
+        creditRequest.loanRepaymentAmount = creditRequest.amountApproved + interest;
+        await creditRequest.save();
+  
+        return {
+          data: {
+            message: 'Credit request approved',
+            prediction,
+            creditScore,
+            loan: newLoan,
+          },
+        };
+      } else {
+        creditRequest.status = CreditRequestStatus.Denied;
+        await creditRequest.save();
+  
+        return {
+          data: {
+            message: 'Credit request rejected due to low score',
+            prediction,
+            creditScore,
+          },
+        };
+      }
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Error processing credit request',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+  
 
   
-  // async processCreditRequest(
-  //   creditRequestId: string,
-  //   adminId: string,
-  //   status: CreditRequestStatus,
-  // ): Promise<CreditRequest> {
-  //   try {
-  //     const creditRequest =
-  //       await this.creditRequestModel.findById(creditRequestId);
-
-  //     if (!creditRequest)
-  //       throw new NotFoundException('Credit request not found');
-
-  //     const updateData: any = { status };
-  //     if (
-  //       status === CreditRequestStatus.Approved &&
-  //       amountToBeGiven !== undefined
-  //     ) {
-  //       const interest =
-  //         (amountToBeGiven * creditRequest.interestPercentage) / 100;
-
-  //       updateData.amountApproved = amountToBeGiven;
-  //       updateData.loanRepaymentAmount = amountToBeGiven + interest;
-  //     }
-
-  //     const updatedCreditRequest =
-  //       await this.creditRequestModel.findByIdAndUpdate(
-  //         creditRequestId,
-  //         { $set: updateData },
-  //         { new: true },
-  //       );
-
-  //     if (updatedCreditRequest.status === CreditRequestStatus.Approved) {
-  //       await this.createLoan(updatedCreditRequest, adminId);
-  //     } else if (updatedCreditRequest.status === CreditRequestStatus.Denied) {
-  //       await this.creditRequestDeclineAction(updatedCreditRequest, adminId);
-  //     }
-
-  //     return updatedCreditRequest;
-  //   } catch (ex) {
-  //     throw new HttpException(ex.message, HttpStatus.INTERNAL_SERVER_ERROR);
-  //   }
-  // }
-
+  
 
   async findById(id: string): Promise<IServiceResponse> {
     try {

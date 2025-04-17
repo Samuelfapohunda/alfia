@@ -15,16 +15,23 @@ import { UsersService } from '../users/users.service';
 import { CreditRequest, CreditRequestSchema } from 'src/models/credit-request.model';
 import { AdminService } from '../admin/admin.service';
 import { Loan, LoanSchema } from 'src/models/loan.model';
+import { CreditScoreService } from '../credit-score/credit-score.service';
+import { LoanService } from '../loan/loan.service';
+import { CreditScore, CreditScoreSchema } from 'src/models/credit-score.model';
+import { HttpModule } from '@nestjs/axios';
+import { ZeehService } from '../zeeh/zeeh.service';
 
 @Module({
   imports: [
+     HttpModule,
     MongooseModule.forFeature([
       { name: Admin.name, schema: AdminSchema },
       { name: CreditRequest.name, schema: CreditRequestSchema },
+      { name: CreditScore.name, schema: CreditScoreSchema },
       { name: Loan.name, schema: LoanSchema },
-      { name: Hospital.name, schema: HospitalSchema },
+      { name: Hospital.name, schema: HospitalSchema }, 
       { name: Bill.name, schema: BillSchema },
-      { name: Role.name, schema: RoleSchema },
+      { name: Role.name, schema: RoleSchema }, 
       { name: User.name, schema: UserSchema },
     ]),
   ],
@@ -33,9 +40,12 @@ import { Loan, LoanSchema } from 'src/models/loan.model';
     CreditRequestService,
     MailService,
     AdminService,
+    ZeehService,
     RoleService,
     EmailService,
     HospitalService,
+    CreditScoreService,
+    LoanService,
     UsersService
   ],
   exports: [MongooseModule],

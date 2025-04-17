@@ -33,11 +33,6 @@ export const setupSwagger = (app: INestApplication) => {
       name: 'User',
       description: 'Endpoints for user account management.',
     },
-    // {
-    //   name: 'Profile',
-    //   description:
-    //     'Endpoints for managing user profiles, including creation, retrieval, and updates.',
-    // },
     {
       name: 'Hospital',
       description: 'Endpoints for managing hospitals.',
@@ -51,14 +46,26 @@ export const setupSwagger = (app: INestApplication) => {
       description:
         'Administrative endpoints for managing users, roles, and system settings.',
     },
-    // {
-    //   name: 'Waitlist',
-    //   description: 'Endpoints for managing and interacting with the waitlist.',
-    // },
-    // {
-    //   name: 'Matchmaking',
-    //   description: 'Endpoints for managing user matches and preferences.',
-    // },
+    {
+      name: 'Bill',
+      description: 'Bill management endpoints for users.',
+    },
+    {
+      name: 'Credit-Request',
+      description: 'Endpoints for managing credit requests.',
+    },
+    {
+      name: 'Loan',
+      description: 'Endpoints for managing loans.',
+    },
+    {
+      name: 'Credit-score',
+      description: 'Endpoints for managing credit scores.',
+    },
+    {
+      name: 'Zeeh',
+      description: 'Endpoints for managing Zeeh integration.',
+    },
   ];
 
   SwaggerModule.setup(SWAGGER_API_ROOT, app, document);

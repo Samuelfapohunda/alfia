@@ -15,7 +15,7 @@ export class CreateLoanDto {
   @ApiProperty() @IsNotEmpty() @IsMongoId() userId: string;
   @ApiProperty() @IsNotEmpty() @IsNumber() @IsPositive() amountGiven: number;
   @ApiProperty() @IsNotEmpty() @IsString() amountToPay: number;
-  @ApiProperty() @IsNotEmpty() @IsString() description: string;
+//   @ApiProperty() @IsNotEmpty() @IsString() description: string;
   @ApiProperty() @IsNotEmpty() @IsNumber() @IsPositive() duration: number;
   @ApiProperty() @IsNotEmpty() @IsString() frequency: string;
   @ApiProperty() @IsNotEmpty() @IsDateString() startDate: Date;

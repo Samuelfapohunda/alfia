@@ -22,6 +22,14 @@ export class CreditRequest {
   @Prop({ required: true })
   startDate: Date;
 
+
+  @Prop({ required: true })
+  endDate: Date;
+
+  @Prop({ required: true })
+  nextRepaymentDate: Date;
+
+
   @Prop({ required: true })
   duration: number;
 
