@@ -10,6 +10,8 @@ import { BillModule } from './modules/bill/bill.module';
 import { CreditRequestModule } from './modules/creditRequest/credit-request.module';
 import { CreditScoreModule } from './modules/credit-score/credit-score.module';
 import { LoanModule } from './modules/loan/loan.module';
+import { TransactionModule } from './modules/transaction/transaction.module';
+import { WalletModule } from './modules/wallet/wallet.module';
 
 @Module({
   imports: [
@@ -22,7 +24,9 @@ import { LoanModule } from './modules/loan/loan.module';
     BillModule,
     CreditRequestModule,
     CreditScoreModule,
-    LoanModule
+    LoanModule,
+   TransactionModule,
+   WalletModule
   ],
   controllers: [],
   providers: [],

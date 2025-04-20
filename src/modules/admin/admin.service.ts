@@ -528,6 +528,31 @@ export class AdminService {
     }
   }
 
+
+  
+
+  // async fundWallet (
+  //   adminId: string,
+  //   amount: number,
+
+  // ): Promise <IServiceResponse> {
+
+  //   const admin = await this.adminModel.findById(adminId);
+  //   if (!admin) {
+  //     throw new NotFoundException('Admin not found');
+  //   }
+
+  // const paymentData = {
+  //   email: admin.email,
+  //   amount: amount * 100, // Amount in kobo
+  //   reference: Helpers.generateReference(),
+  //   metadata: JSON.stringify({
+  //     adminId: admin._id,
+  //   }),
+
+  // }
+  // }
+
   async getPendingHospitalsToBeApproved(
     skip: number,
     limit: number,

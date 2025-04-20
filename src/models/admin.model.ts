@@ -34,6 +34,9 @@ export class Admin {
   lastLogin: Date;
 
   @Prop()
+  walletBalance: number;
+
+  @Prop()
   activityCount: number;
 
   @Prop({ required: true })

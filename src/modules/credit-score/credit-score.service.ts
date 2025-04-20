@@ -31,6 +31,7 @@ export class CreditScoreService {
     private readonly zeehService: ZeehService,
   ) {}
 
+
   async getCreditScore(userId: string): Promise<IServiceResponse> {
     try {
       const user = await this.userService.getUserById(userId);

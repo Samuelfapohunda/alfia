@@ -34,4 +34,16 @@ export class Helpers {
 
     return password;
   }
+
+  static generateReference(): string {
+    const now = new Date();
+    const formattedDate = now
+      .toISOString()
+      .replace(/[-:.TZ]/g, '')
+      .slice(0, 14);
+
+    const uniqueId = randomBytes(12).toString('hex');
+
+    return `${formattedDate}-${uniqueId}`;
+  }
 }
