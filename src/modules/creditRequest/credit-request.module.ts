@@ -20,6 +20,10 @@ import { LoanService } from '../loan/loan.service';
 import { CreditScore, CreditScoreSchema } from 'src/models/credit-score.model';
 import { HttpModule } from '@nestjs/axios';
 import { ZeehService } from '../zeeh/zeeh.service';
+import { WalletService } from '../wallet/wallet.service';
+import { Wallet, WalletSchema } from 'src/models/wallet.model';
+import { TransactionService } from '../transaction/transaction.service';
+import { Transaction, TransactionSchema } from 'src/models/transaction.model';
 
 @Module({
   imports: [
@@ -27,7 +31,10 @@ import { ZeehService } from '../zeeh/zeeh.service';
     MongooseModule.forFeature([
       { name: Admin.name, schema: AdminSchema },
       { name: CreditRequest.name, schema: CreditRequestSchema },
+      { name: Hospital.name, schema: HospitalSchema },
       { name: CreditScore.name, schema: CreditScoreSchema },
+      { name: Wallet.name, schema: WalletSchema },
+      { name: Transaction.name, schema: TransactionSchema },
       { name: Loan.name, schema: LoanSchema },
       { name: Hospital.name, schema: HospitalSchema }, 
       { name: Bill.name, schema: BillSchema },
@@ -37,7 +44,9 @@ import { ZeehService } from '../zeeh/zeeh.service';
   ],
   controllers: [CreditRequestController],
   providers: [
+    WalletService,
     CreditRequestService,
+    TransactionService,
     MailService,
     AdminService,
     ZeehService,

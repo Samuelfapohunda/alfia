@@ -12,6 +12,7 @@ import { ObjectId } from 'mongoose';
 export class CreateTransactionDto {
   @ApiProperty() @IsOptional() @IsMongoId() userId?: string;
   @ApiProperty() @IsOptional() @IsMongoId() adminId?: string;
+  @ApiProperty() @IsOptional() @IsMongoId() hospitalId?: string;
   @ApiProperty() @IsNotEmpty() @IsString() description: string;
   @ApiProperty() @IsOptional() @IsString() reference?: string;
   @ApiProperty() @IsNotEmpty() @IsNumber() @IsPositive() amount: number;

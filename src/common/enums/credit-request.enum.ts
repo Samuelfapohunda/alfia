@@ -9,4 +9,11 @@ export enum CreditRequestStatus {
     Weekly = 'weekly',
     Monthly = 'monthly',
   }
+
+  
+export enum Frequency {
+  daily = 'daily', 
+  weekly = 'weekly',
+  monthly = 'monthly', 
+} 
   

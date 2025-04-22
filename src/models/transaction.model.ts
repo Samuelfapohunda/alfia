@@ -12,6 +12,9 @@ export class Transaction {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Admin' })
   adminId: string;
 
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Hospital' })
+  hospitalId: string;
+
   @Prop()
   reference: string;
 

@@ -1,4 +1,5 @@
 import {
+    BadRequestException,
   HttpException,
   HttpStatus,
   Injectable,
@@ -25,11 +26,30 @@ export class WalletService {
     private readonly walletModel: Model<Wallet>,
   ) {}
 
-  async getWallet(): Promise<IServiceResponse> {
-    const wallet = await this.walletModel.findOne({ isDefault: true });
-    if (!wallet) throw new NotFoundException('Wallet not found');
-    return {
-      data: wallet,
-    };
+  async fundSystemWallet(amount: number): Promise<void> {
+    let wallet = await this.walletModel.findOne();
+
+    if (!wallet) {
+      wallet = new this.walletModel({ amount: amount });
+    } else {
+      wallet.amount += amount;
+    }
+
+    await wallet.save();
   }
+
+  async getBalance(): Promise<number> {
+    const wallet = await this.walletModel.findOne();
+    return wallet?.amount ?? 0;
+  }
+
+  async debitWallet(amount: number): Promise<void> {
+    const wallet = await this.walletModel.findOne();
+    if (!wallet) throw new NotFoundException('System wallet not found');
+    if (wallet.amount < amount) throw new BadRequestException('Insufficient wallet balance');
+    
+    wallet.amount -= amount;
+    await wallet.save();
+  }
+  
 }

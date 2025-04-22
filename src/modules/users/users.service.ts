@@ -38,5 +38,26 @@ export class UsersService {
     }
   }
 
+
+  
+  async increaseWalletBalance(
+    userId: string,
+    amount: number,
+  ): Promise<IServiceResponse> {
+    try {
+      const user = await this.userModel.findByIdAndUpdate(
+        userId,
+        { $inc: { walletBalance: Math.abs(amount) } },
+        { new: true },
+      );
+
+      return {
+        data: user,
+        message: 'Wallet balance updated successfully',
+      };
+    } catch (ex) {
+      throw new HttpException(ex, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
     
 }

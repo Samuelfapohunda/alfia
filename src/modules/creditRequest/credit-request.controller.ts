@@ -27,6 +27,7 @@ import { GetCurrentUserId } from 'src/common/decorators/getCurrentUser.decorator
 import { CreateCreditRequestDto } from 'src/common/dto/credit-request.dto';
 import { AdminGuard } from 'src/common/guards/admin.guard';
 import { HospitalGuard } from 'src/common/guards/hospital.guard';
+import { CreditRequestStatus } from 'src/common/enums/credit-request.enum';
 
 @Controller('credit-request')
 @ApiTags('Credit-Request')
@@ -143,4 +144,24 @@ export class CreditRequestController {
       data: creditRequest,
     });
   }
-}
+
+  
+  @UseGuards(AuthGuard, AdminGuard)
+  @Post('resolve/:creditRequestId')
+  async processCreditRequest(
+    @Request() req,
+    @Res() res: Response,
+    @Param('creditRequestId') creditRequestId: string,
+    @GetCurrentUserId() adminId: string,
+  ) {
+    const creditRequest = await this.creditRequestService.processCreditRequest(
+      creditRequestId,
+      adminId,
+    );
+    return res.status(HttpStatus.OK).json({
+      message: 'Credit Request resolved successfully',
+      data: creditRequest,
+    });
+  }
+
+} 

@@ -18,6 +18,12 @@ import { ZeehService } from '../zeeh/zeeh.service';
 import { Loan, LoanSchema } from 'src/models/loan.model';
 import { HttpModule } from '@nestjs/axios';
 import { Wallet, WalletSchema } from 'src/models/wallet.model';
+import { PaystackService } from '../paystack/paystack.service';
+import { Paystack, PaystackSchema } from 'src/models/paystack.model';
+import { TransactionService } from '../transaction/transaction.service';
+import { Transaction, TransactionSchema } from 'src/models/transaction.model';
+import { PaymentService } from 'src/common/utils/payment.service';
+import { Payment, PaymentSchema } from 'src/models/payment.model';
 
 @Module({
   imports: [
@@ -25,8 +31,11 @@ import { Wallet, WalletSchema } from 'src/models/wallet.model';
     MongooseModule.forFeature([
       { name: Admin.name, schema: AdminSchema },
       { name: CreditRequest.name, schema: CreditRequestSchema },
+      { name: Paystack.name, schema: PaystackSchema },
+      { name: Payment.name, schema: PaymentSchema },
+      { name: Transaction.name, schema: TransactionSchema },
       { name: Loan.name, schema: LoanSchema },
-      { name: Wallet.name, schema: WalletSchema },
+      { name: Wallet.name, schema: WalletSchema }, 
       { name: Hospital.name, schema: HospitalSchema },
       { name: Bill.name, schema: BillSchema },
       { name: Role.name, schema: RoleSchema },
@@ -37,11 +46,14 @@ import { Wallet, WalletSchema } from 'src/models/wallet.model';
   providers: [
     WalletService,
     ZeehService,
+    TransactionService,
+    PaymentService,
     MailService,
     AdminService,
     RoleService,
     EmailService,
     HospitalService,
+    PaystackService,
     UsersService
   ],
   exports: [MongooseModule],

@@ -1,6 +1,9 @@
 import * as OTP from 'n-digit-token';
 import { randomBytes } from 'crypto';
 import { hash, verify } from 'argon2';
+import * as moment from 'moment';
+import { CreditRequestFrequencyEnum, Frequency } from '../enums/credit-request.enum';
+import { HttpException, HttpStatus } from '@nestjs/common';
 
 export class Helpers {
   static generateOtp(length: number): string {
@@ -46,4 +49,43 @@ export class Helpers {
 
     return `${formattedDate}-${uniqueId}`;
   }
+
+
+  
+static calculateNextRepaymentDate(
+  startDate: Date,
+  frequency: string,
+): Date {
+  const start = moment(startDate);
+
+  switch (frequency) {
+    case CreditRequestFrequencyEnum.Daily:
+      return start.add(1, 'days').toDate();
+    case CreditRequestFrequencyEnum.Weekly:
+      return start.add(1, 'weeks').toDate();
+    case CreditRequestFrequencyEnum.Monthly:
+      return start.add(1, 'months').toDate();
+    default:
+      throw new HttpException('Invalid frequency', HttpStatus.BAD_REQUEST);
+  }
+}
+
+static calculateEndDate = (
+  startDate: Date,
+  frequency: CreditRequestFrequencyEnum,
+  duration: number,
+): Date => {
+  const start = moment(startDate);
+
+  switch (frequency) {
+    case 'daily':
+      return start.add(duration, 'days').toDate();
+    case 'weekly':
+      return start.add(duration, 'weeks').toDate();
+    case 'monthly':
+      return start.add(duration, 'months').toDate();
+    default:
+      throw new Error('Invalid frequency');
+  }
+};
 }

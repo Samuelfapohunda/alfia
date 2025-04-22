@@ -406,14 +406,37 @@ export class AdminService {
     };
   }
 
-  async getUserById(userId: string): Promise<IServiceResponse> {
+  async getUserById(adminId: string): Promise<IServiceResponse> {
     try {
-      const user = await this.userModel.findById(userId);
-      if (!user) {
-        throw new NotFoundException('User not found');
+      const admin = await this.adminModel.findById(adminId);
+      if (!admin) {
+        throw new NotFoundException('Admin not found');
       }
       return {
-        data: user,
+        data: admin,
+      };
+    } catch (ex) {
+      throw new HttpException(ex, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  
+  async increaseWalletBalance(
+    adminId: ObjectId,
+    amount: number,
+  ): Promise<IServiceResponse> {
+    try {
+      const admin = await this.adminModel.findByIdAndUpdate(
+        adminId,
+        { $inc: { walletBalance: Math.abs(amount) } },
+        { new: true },
+      );
+      if (!admin) {
+        throw new NotFoundException('Admin not found');
+      }
+
+      return {
+        data: admin
       };
     } catch (ex) {
       throw new HttpException(ex, HttpStatus.INTERNAL_SERVER_ERROR);

@@ -18,8 +18,8 @@ class ServiceItem {
 export class CreateBillDto {
   @IsNotEmpty()
   @ApiProperty()
-  @IsMongoId()
-  userId: ObjectId;
+  @IsString()
+  userId: string;
 
   @IsArray()
   @ApiProperty()
