@@ -29,6 +29,7 @@ import {
 import { Helpers } from 'src/common/helpers';
 import { Loan } from 'src/models/loan.model';
 import { Admin } from 'src/models/admin.model';
+import { FraudDetectionService } from './fraud-detection.service';
 
 @Injectable()
 export class CreditRequestService {
@@ -43,6 +44,7 @@ export class CreditRequestService {
     private readonly loanService: LoanService,
     private readonly walletService: WalletService,
     private readonly transactionService: TransactionService,
+    private readonly fraudDetectionService: FraudDetectionService,
   ) {}
 
   async create(
@@ -50,7 +52,6 @@ export class CreditRequestService {
     createCreditRequestDto: CreateCreditRequestDto,
   ): Promise<IServiceResponse> {
     try {
-       
       const bill = await this.billModel.findById(billId);
       if (!bill) {
         throw new NotFoundException('Bill not found');
@@ -85,12 +86,6 @@ export class CreditRequestService {
         userId,
         status: CreditRequestStatus.Pending,
       });
-      //   if (existingLoan) {
-      //     throw new HttpException(
-      //       'User has an active loan.',
-      //       HttpStatus.BAD_REQUEST,
-      //     );
-      //   }
 
       if (pendingCreditRequest) {
         throw new HttpException(
@@ -111,6 +106,19 @@ export class CreditRequestService {
         duration: createCreditRequestDto.duration,
       });
 
+
+      
+      const suspicionReasons = await this.fraudDetectionService.detectFraud(
+        billId,
+        userId,
+      );
+
+      if (suspicionReasons.length > 0) {
+        newCreditRequest.isSuspicious = true;
+        newCreditRequest.suspicionReasons = suspicionReasons;
+        await newCreditRequest.save();
+      }
+
       return {
         data: newCreditRequest,
       };
@@ -121,14 +129,13 @@ export class CreditRequestService {
 
   async processCreditRequest(
     creditRequestId: string,
-    adminId: string
+    adminId: string,
   ): Promise<IServiceResponse> {
     try {
+      const admin = await this.adminModel.findById(adminId);
 
-      const admin = await this.adminModel.findById(adminId)
-
-      if(!admin){
-        throw new NotFoundException('Admin not found')
+      if (!admin) {
+        throw new NotFoundException('Admin not found');
       }
       const creditRequest = await this.creditRequestModel
         .findById(creditRequestId)

@@ -1,6 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
-import { CreditRequestFrequencyEnum, CreditRequestStatus } from 'src/common/enums/credit-request.enum';
+import {
+  CreditRequestFrequencyEnum,
+  CreditRequestStatus,
+} from 'src/common/enums/credit-request.enum';
 
 export type CreditRequestDocument = CreditRequest &
   HydratedDocument<CreditRequest>;
@@ -22,13 +25,11 @@ export class CreditRequest {
   @Prop({ required: true })
   startDate: Date;
 
-
   @Prop({ required: true })
   endDate: Date;
 
   @Prop({ required: true })
   nextRepaymentDate: Date;
-
 
   @Prop({ required: true })
   duration: number;
@@ -39,14 +40,20 @@ export class CreditRequest {
   @Prop()
   interestPercentage: number;
 
-  @Prop({ default:CreditRequestStatus.Pending })
+  @Prop({ default: CreditRequestStatus.Pending })
   status: CreditRequestStatus;
 
   @Prop()
-  loanRepaymentAmount: number; 
+  loanRepaymentAmount: number;
 
-  @Prop({default: false})
+  @Prop({ default: false })
   isDeleted: boolean;
+
+  @Prop({ default: false })
+  isSuspicious: boolean;
+
+  @Prop({ type: [String], default: [] })
+  suspicionReasons: string[];
 }
 
 export const CreditRequestSchema = SchemaFactory.createForClass(CreditRequest);

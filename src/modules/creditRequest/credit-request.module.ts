@@ -24,6 +24,7 @@ import { WalletService } from '../wallet/wallet.service';
 import { Wallet, WalletSchema } from 'src/models/wallet.model';
 import { TransactionService } from '../transaction/transaction.service';
 import { Transaction, TransactionSchema } from 'src/models/transaction.model';
+import { FraudDetectionService } from './fraud-detection.service';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { Transaction, TransactionSchema } from 'src/models/transaction.model';
     TransactionService,
     MailService,
     AdminService,
+    FraudDetectionService,
     ZeehService,
     RoleService,
     EmailService,

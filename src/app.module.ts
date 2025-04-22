@@ -12,9 +12,17 @@ import { CreditScoreModule } from './modules/credit-score/credit-score.module';
 import { LoanModule } from './modules/loan/loan.module';
 import { TransactionModule } from './modules/transaction/transaction.module';
 import { WalletModule } from './modules/wallet/wallet.module';
+import { CacheModule } from '@nestjs/cache-manager';
+import * as redisStore from 'cache-manager-ioredis';
 
 @Module({
   imports: [
+    CacheModule.register({
+      isGlobal: true,
+      store: redisStore,
+      host: 'localhost',
+      port: 6379,
+    }),
     MongooseModule.forRoot(MONGO_URI),
     AuthModule,
     RoleModule,
