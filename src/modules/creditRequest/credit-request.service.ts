@@ -81,18 +81,18 @@ export class CreditRequestService {
         createCreditRequestDto.duration,
       );
 
-      const pendingCreditRequest = await this.creditRequestModel.findOne({
-        billId,
-        userId,
-        status: CreditRequestStatus.Pending,
-      });
+      // const pendingCreditRequest = await this.creditRequestModel.findOne({
+      //   billId,
+      //   userId,
+      //   status: CreditRequestStatus.Pending,
+      // });
 
-      if (pendingCreditRequest) {
-        throw new HttpException(
-          'User has a pending credit request.',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
+      // if (pendingCreditRequest) {
+      //   throw new HttpException(
+      //     'User has a pending credit request.',
+      //     HttpStatus.BAD_REQUEST,
+      //   );
+      // }
 
       const newCreditRequest = await this.creditRequestModel.create({
         billId,

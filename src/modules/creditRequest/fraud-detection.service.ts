@@ -1,7 +1,6 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Cache } from 'cache-manager';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Model } from 'mongoose';
 import { Bill } from 'src/models/bill.model';
 import { CreditRequest } from 'src/models/credit-request.model';
@@ -18,50 +17,84 @@ export class FraudDetectionService {
 
   async detectFraud(billId: string, userId: string): Promise<string[]> {
     const flags: string[] = [];
-
-    await this.cacheManager.set('test-key', 1, 60);
-    const value = await this.cacheManager.get('test-key');
-    console.log('[Redis Test] test-key:', value);
     const bill = await this.billModel.findById(billId);
     if (!bill) return flags;
 
-    console.log(`Checking fraud for hospital: ${bill.hospitalId}`);
+    console.log(`[Fraud Check] Bill: ${billId}, Hospital: ${bill.hospitalId}, User: ${userId}`);
 
-    const now = Date.now();
     const userKey = `credit_req_user:${userId}`;
     const hospitalKey = `credit_req_hospital:${bill.hospitalId}`;
+    const windowSeconds = 60;
 
-    const userCount = await this.incrementAndGetCount(userKey, 60);
-    const hospitalCount = await this.incrementAndGetCount(hospitalKey, 60);
+    const userRequestCount = await this.incrementRequestCount(userKey, windowSeconds);
+    const hospitalRequestCount = await this.incrementRequestCount(hospitalKey, windowSeconds);
 
-    console.log(`User count: ${userCount}, Hospital count: ${hospitalCount}`);
+    console.log(`[Request Counts] User: ${userRequestCount}, Hospital: ${hospitalRequestCount}`);
 
-    if (userCount > 3) {
+    if (userRequestCount >= 3) {
       flags.push('User sent multiple requests in short time');
     }
 
-    if (hospitalCount > 2) {
+    if (hospitalRequestCount >= 3) {
       flags.push('Hospital sending too many credit requests quickly');
     }
 
-    const allRequests = await this.creditRequestModel.find();
-    const avgAmount =
-      allRequests.reduce((sum, r) => sum + (r.amountRequested || 0), 0) /
-      Math.max(allRequests.length, 1);
-
+    const avgAmount = await this.getAverageRequestAmount();
     if (bill.totalAmount > avgAmount * 2) {
       flags.push('Unusually large loan request');
     }
 
+    if (flags.length > 0) {
+      const response = {
+        statusCode: HttpStatus.TOO_MANY_REQUESTS,
+        message: 'FRAUD_DETECTED',
+        flags,
+        counts: {
+          user: userRequestCount,
+          hospital: hospitalRequestCount,
+        },
+        averageAmount: avgAmount,
+        currentAmount: bill.totalAmount,
+        timestamp: new Date().toISOString()
+      };
+      
+      console.log('Fraud Block Response:', response);
+      throw new HttpException(response, HttpStatus.TOO_MANY_REQUESTS);
+    }
     return flags;
   }
-  private async incrementAndGetCount(
-    key: string,
-    ttl: number,
-  ): Promise<number> {
-    const current = (await this.cacheManager.get<number>(key)) || 0;
-    const updated = current + 1;
-    await this.cacheManager.set(key, updated, ttl);
-    return updated;
+
+  private async getAverageRequestAmount(): Promise<number> {
+    const result = await this.creditRequestModel.aggregate([
+      {
+        $group: {
+          _id: null,
+          avgAmount: { $avg: '$amountRequested' },
+        },
+      },
+    ]);
+    return result[0]?.avgAmount || 0;
+  }
+
+  private async incrementRequestCount(key: string, ttl: number): Promise<number> {
+    try {
+      const current = await this.cacheManager.get<number>(key);
+      
+     
+      if (current === undefined) {
+        await this.cacheManager.set(key, 1, ttl * 1000);
+        return 1;
+      }
+      
+      const newCount = (current ?? 0) + 1;
+      await this.cacheManager.set(key, newCount);
+      return newCount;
+    } catch (error) {
+      console.error('Cache operation failed:', error);
+      throw new HttpException(
+        'Failed to process request',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }
